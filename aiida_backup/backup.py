@@ -50,13 +50,18 @@ def get_query(full, node_ids, past_days, timestamp, query_date_mode):
         return QueryBuilder().append(Node, filters={'id':{'in':node_ids}})
     elif timestamp:
         # Returning a query that searches all nodes.
-        with open(timestamp) as f:
-            for line in f.readlines():
-                # This way, the timestamp is the first float in the last non-empty line:
-                if line.strip():
-                    timestamp_from = float(line.split()[0])
-        datetime_from = datetime.datetime.fromtimestamp(timestamp_from)
-        return QueryBuilder().append(Node, filters={query_date_mode:{'>=': datetime_from}})
+        try:
+            with open(timestamp) as f:
+                for line in f.readlines():
+                    # This way, the timestamp is the first float in the last non-empty line:
+                    if line.strip():
+                        timestamp_from = float(line.split()[0])
+            datetime_from = datetime.datetime.fromtimestamp(timestamp_from)
+            return QueryBuilder().append(Node, filters={query_date_mode:{'>=': datetime_from}})
+        except Exception as e:
+            print(e)
+            print("There was an error reading the timestamp, I will return all nodes")
+            return QueryBuilder().append(Node)
     elif past_days is not None:
         if past_days < 1:
             raise ValueError('past days has to be at least one')
