@@ -48,9 +48,7 @@ def get_query(full, node_ids, past_days, timestamp, query_date_mode):
         # Returning a query that searches all nodes.
         with open(timestamp) as f:
             for line in f.readlines():
-                # This way, the timestamp is the first float in the last non-empty
-                # line:
-                # print line.strip()
+                # This way, the timestamp is the first float in the last non-empty line:
                 if line.strip():
                     timestamp_from = float(line.split()[0])
         datetime_from = datetime.datetime.fromtimestamp(timestamp_from)
@@ -74,10 +72,10 @@ def get_paths_to_tar(query, verbosity=1):
     paths_to_tar = set()
     res = query.all()
     if verbosity:
-        print '{} items to back up'.format(len(res))
+        print('{} items to back up'.format(len(res)))
     for node, in res:
         if verbosity >1:
-            print "Backing up {}".format(node)
+            print("Backing up {}".format(node))
         path = RepositoryFolder(
                 section='node', #Node._section_name, # hardcoded to be independent of AiiDA Version
                 uuid=node.uuid).abspath
@@ -116,7 +114,7 @@ def tar_paths(paths_to_tar, location, ignore_files=[], verbosity=1, dry_run=Fals
         cmd = 'tar cf {} -C {} {} {}'.format(tar_file_name,
                 '/'.join(splitted_path[:-1]), splitted_path[-1], ignore_pattern)
         if verbosity>1:
-            print "Command: {}".format(cmd)
+            print("Command: {}".format(cmd))
         if dry_run:
             continue
         else:
