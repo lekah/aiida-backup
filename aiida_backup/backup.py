@@ -6,11 +6,15 @@ it tars two levels down. At most, 65536 tarfiles will be made.
 TODO: Use `tar -tf ` to inspect existing tar, and only, update only if new files
     are present. Or append missing files to archive
 """
+import aiida
 from aiida.common.folders import RepositoryFolder
 from aiida.orm import Node
 from aiida.orm.querybuilder import QueryBuilder
-from aiida.utils import timezone
-from aiida.backends.utils import load_dbenv, is_dbenv_loaded
+
+if aiida.__version__.startswith('0.'):
+    from aiida.utils import timezone
+else:
+    from aiida.common import timezone
 
 import datetime, os, subprocess, time
 
@@ -154,8 +158,6 @@ if __name__=='__main__':
             raise RuntimeError("mtime: {}, ctime: {}".format(parsed.mtime, parsed.ctime))
     else:
         query_date_mode=None
-    if not is_dbenv_loaded():
-        load_dbenv()
 
     if parsed.timestamp:
         current_time = timezone.now()
